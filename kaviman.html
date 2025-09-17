@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>कविमन - हिंदी कविताओं का संसार</title>
+  <style>
+    /* Reset & base */
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #e0f7fa;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* Header */
+    header {
+      background: #004d40;
+      color: #b2dfdb;
+      padding: 15px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 9999;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      user-select: none;
+      color: #00e5ff;
+      cursor: default;
+    }
+
+    /* Navigation */
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    nav button, nav .logout-btn {
+      background: transparent;
+      border: 2px solid #00e5ff;
+      color: #00e5ff;
+      padding: 8px 15px;
+      font-weight: 600;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: 0.3s ease background-color, 0.3s ease color;
+      user-select: none;
+      min-width: 90px;
+    }
+    nav button:hover, nav .logout-btn:hover {
+      background: #00e5ff;
+      color: #004d40;
+    }
+    nav .logout-btn {
+      border-color: #d32f2f;
+      color: #f44336;
+      min-width: 100px;
+    }
+    nav .logout-btn:hover {
+      background: #f44336;
+      color: white;
+    }
+
+    /* Hamburger menu for mobile */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      gap: 5px;
+    }
+    .hamburger div {
+      width: 25px;
+      height: 3px;
+      background: #00e5ff;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    /* Mobile menu */
+    @media (max-width: 700px) {
+      nav {
+        position: fixed;
+        top: 60px;
+        right: 0;
+        background: #004d40;
+        flex-direction: column;
+        width: 220px;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        border-radius: 0 0 0 12px;
+        padding: 20px 0;
+        box-shadow: -3px 3px 15px rgba(0,0,0,0.7);
+        z-index: 999;
+      }
+      nav.open {
+        transform: translateX(0);
+      }
+      nav button, nav .logout-btn {
+        width: 90%;
+        margin: 10px auto;
+        min-width: auto;
+      }
+      .hamburger {
+        display: flex;
+      }
+    }
+
+    /* Main container */
+    main {
+      flex-grow: 1;
+      padding: 30px 20px;
+      max-width: 900px;
+      margin: 20px auto 40px auto;
+      width: 95%;
+      min-height: 70vh;
+      background: rgba(0, 77, 64, 0.4);
+      border-radius: 15px;
+      box-shadow: 0 0 20px #00e5ff99;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #00e5ff #004d40;
+    }
+    main::-webkit-scrollbar {
+      width: 8px;
+    }
+    main::-webkit-scrollbar-track {
+      background: #004d40;
+      border-radius: 10px;
+    }
+    main::-webkit-scrollbar-thumb {
+      background-color: #00e5ff;
+      border-radius: 10px;
+      border: 2px solid #004d40;
+    }
+
+    /* Common sections hidden */
+    section.hidden {
+      display: none;
+    }
+
+    /* --- Home Page --- */
+    #home {
+      text-align: center;
+      animation: fadeIn 1.2s ease forwards;
+      user-select: none;
+    }
+    #home h2 {
+      font-size: 2.7rem;
+      color: #00e5ff;
+      margin-bottom: 15px;
+      text-shadow: 0 0 12px #00e5ffaa;
+      animation: slideInFromLeft 1s ease forwards;
+    }
+    #home p {
+      max-width: 700px;
+      margin: 0 auto 15px auto;
+      font-size: 1.3rem;
+      line-height: 1.7;
+      color: #a0ffff;
+      opacity: 0;
+      animation: fadeIn 2s ease 0.6s forwards;
+    }
+
+    /* --- Login Form --- */
+    form {
+      max-width: 420px;
+      margin: 0 auto;
+      background: rgba(0, 229, 255, 0.1);
+      padding: 30px 25px;
+      border-radius: 14px;
+      box-shadow: 0 0 15px #00e5ffaa;
+    }
+    form h2 {
+      text-align: center;
+      margin-bottom: 22px;
+      color: #00e5ff;
+      font-weight: 700;
+      letter-spacing: 1.1px;
+      user-select: none;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 12px 14px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      border: none;
+      font-size: 1rem;
+      outline: none;
+      background: rgba(0, 229, 255, 0.2);
+      color: #004d40;
+      transition: background-color 0.3s ease;
+      font-weight: 600;
+    }
+    input:focus, textarea:focus {
+      background: rgba(0, 229, 255, 0.4);
+    }
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+      font-family: inherit;
+    }
+    form button {
+      width: 100%;
+      background: #00e5ff;
+      color: #004d40;
+      border: none;
+      padding: 14px 0;
+      border-radius: 10px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    form button:hover {
+      background: #00838f;
+      color: #b2dfdb;
+    }
+
+    /* --- Poems Grid --- */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+      gap: 22px;
+      margin-top: 20px;
+    }
+    .card {
+      background: rgba(0, 229, 255, 0.1);
+      border-radius: 15px;
+      padding: 18px 22px;
+      box-shadow: 0 0 15px #00e5ff88;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      min-height: 180px;
+    }
+    .card:hover {
+      transform: scale(1.06);
+      box-shadow: 0 0 25px #00e5ffcc;
+    }
+    .card h3 {
+      margin-bottom: 6px;
+      color: #00e5ff;
+      font-size: 1.25rem;
+      user-select: text;
+    }
+    .card p {
+      flex-grow: 1;
+      white-space: pre-line;
+      color: #b2dfdb;
+      font-weight: 600;
+      user-select: text;
+    }
+    .card .type {
+      font-style: italic;
+      color: #66fff0;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    /* --- About Section --- */
+    #aboutAuthors {
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: center;
+      user-select: none;
+    }
+    #aboutAuthors h2 {
+      margin-bottom: 22px;
+      color: #00e5ff;
+      font-size: 2.2rem;
+    }
+    #aboutAuthors p {
+      margin-bottom: 14px;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: #a0f0ff;
+      font-weight: 600;
+    }
+    #aboutAuthors p strong {
+      color: #00e5ff;
+      font-weight: 700;
+    }
+
+    /* --- Responsive tweaks --- */
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 1.4rem;
+      }
+      #home h2 {
+        font-size: 1.8rem;
+      }
+      #home p {
+        font-size: 1.1rem;
+      }
+      form {
+        padding: 20px 15px;
+      }
+      .card {
+        min-height: 150px;
+      }
+    }
+
+    /* Animations */
+    @keyframes slideInFromLeft {
+      0% {opacity: 0; transform: translateX(-60px);}
+      100% {opacity: 1; transform: translateX(0);}
+    }
+    @keyframes fadeIn {
+      0% {opacity: 0;}
+      100% {opacity: 1;}
+    }
+
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>कविमन</h1>
+
+  <div class="hamburger" id="hamburger" aria-label="मेनू खोलें" tabindex="0">
+    <div></div><div></div><div></div>
+  </div>
+
+  <nav id="navMenu" aria-label="मुख्य नेविगेशन">
+    <button onclick="showPage('home')" aria-label="होम पेज पर जाएं">होम</button>
+    <button onclick="showPage('login')" aria-label="लॉगिन पेज पर जाएं">लॉगिन</button>
+    <button onclick="showPage('poems')" aria-label="कविताएँ देखें">कविताएँ</button>
+    <button onclick="showPage('aboutAuthors')" aria-label="लेखकों के बारे में पढ़ें">लेखकों के बारे में</button>
+    <button onclick="showPage('registerPoem')" aria-label="नई कविता जोड़ें">नई कविता जोड़ें</button>
+    <button onclick="logout()" class="logout-btn" id="logoutBtn" style="display:none;" aria-label="लॉगआउट करें">लॉगआउट</button>
+  </nav>
+</header>
+
+<main role="main" tabindex="-1">
+  <!-- Home -->
+  <section id="home">
+    <h2>स्वागत है कविमन में!</h2>
+    <p>यहाँ हिंदी कविताओं का एक सुंदर संसार है जहाँ आप प्रसिद्ध कवियों की रचनाएँ पढ़ सकते हैं, अपनी कविताएँ जोड़ सकते हैं, और कविताओं के माध्यम से अपनी भावनाओं को व्यक्त कर सकते हैं।</p>
+    <p>आइए इस अद्भुत यात्रा की शुरुआत करें और कविताओं की दुनिया में खो जाएं।</p>
+  </section>
+
+  <!-- Login -->
+  <section id="login" class="hidden">
+    <form onsubmit="handleLogin(event)" aria-label="लॉगिन फॉर्म">
+      <h2>लॉगिन करें</h2>
+      <input type="text" id="username" placeholder="उपयोगकर्ता नाम" aria-required="true" aria-describedby="usernameHelp" autocomplete="username" />
+      <input type="password" id="password" placeholder="गुप्त शब्द" aria-required="true" autocomplete="current-password" />
+      <button type="submit">प्रवेश करें</button>
+    </form>
+  </section>
+
+  <!-- Poems -->
+  <section id="poems" class="hidden" aria-live="polite">
+    <h2 style="text-align:center; color:#00e5ff;">कविताएँ</h2>
+    <div class="grid" id="poemList" tabindex="0"></div>
+  </section>
+
+  <!-- About Authors -->
+  <section id="aboutAuthors" class="hidden" aria-label="लेखकों के बारे में जानकारी">
+    <h2>लेखकों के बारे में</h2>
+    <p><strong>राहत इंदौरी</strong>: मशहूर शायर और अद्भुत वक्ता।</p>
+    <p><strong>हरिवंश राय बच्चन</strong>: प्रेरणादायक कवि, जिन्होंने 'मधुशाला' जैसी अमर रचना दी।</p>
+    <p><strong>गोपालदास नीरज</strong>: प्रेम और संवेदनशीलता के कवि।</p>
+    <p><strong>सुदर्शन फाकिर</strong>: जीवन के संघर्षों पर गहन विचार।</p>
+    <p><strong>कवि अंश</strong>: युवा कवि, आधुनिक हास्य एवं व्यंग्य की झलक।</p>
+  </section>
+
+  <!-- Register Poem -->
+  <section id="registerPoem" class="hidden">
+    <form onsubmit="handleRegisterPoem(event)" aria-label="नई कविता जोड़ने का फॉर्म">
+      <h2>नई कविता जोड़ें</h2>
+      <input type="text" id="poetName" placeholder="कवि का नाम" aria-required="true" />
+      <input type="text" id="poemType" placeholder="कविता की शैली (जैसे हास्य, प्रेम)" aria-required="true" />
+      <textarea id="poemText" rows="6" placeholder="अपनी कविता यहाँ लिखें..." aria-required="true"></textarea>
+      <button type="submit">जोड़ें</button>
+    </form>
+  </section>
+</main>
+
+<script>
+  const validUsers = {
+    'kavi': 'patra',
+    'admin': '1234'
+  };
+
+  let poems = [
+    {
+      name: "राहत इंदौरी",
+      type: "शायरी",
+      poem: "बुलाती है मगर जाने का नहीं\nये दुनिया है इधर आने का नहीं"
+    },
+    {
+      name: "हरिवंश राय बच्चन",
+      type: "प्रेरणा",
+      poem: "कोशिश करने वालों की कभी हार नहीं होती"
+    },
+    {
+      name: "कवि अंश",
+      type: "हास्य",
+      poem: "डेटा की महफ़िल बड़ी शानदार,\nहँसी के संग मिले सैलरी का प्यार!"
+    },
+    {
+      name: "गोपालदास नीरज",
+      type: "प्रेम",
+      poem: "कारवाँ गुजर गया, गुबार देखते "
+    },
+    {
+      name: "सुदर्शन फाकिर",
+      type: "उदासी",
+      poem: "ज़िंदगी क्या किसी मुफ़लिस की क़बा है जिसमें\nहर घड़ी दर्द के पैबंद लगे जाते हैं"
+    }
+  ];
+
+  let loggedInUser = null;
+
+  // Show/hide sections
+  function showPage(pageId) {
+    // Restrict pages if not logged in except home and login
+    if (!loggedInUser && !['login', 'home'].includes(pageId)) {
+      alert("कृपया पहले लॉगिन करें!");
+      pageId = 'login';
+    }
+
+    // Close mobile menu if open
+    closeMobileMenu();
+
+    document.querySelectorAll('main > section').forEach(sec => {
+      sec.classList.add('hidden');
+    });
+
+    const page = document.getElementById(pageId);
+    if (page) {
+      page.classList.remove('hidden');
+
+      if (pageId === 'poems') {
+        renderPoems();
+      }
+    }
+
+    // Focus main for accessibility
+    document.querySelector('main').focus();
+  }
+
+  // Hamburger toggle
+  const hamburger = document.getElementById('hamburger');
+  const navMenu = document.getElementById('navMenu');
+  hamburger.addEventListener('click', () => {
+    navMenu.classList.toggle('open');
+  });
+  hamburger.addEventListener('keypress', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      navMenu.classList.toggle('open');
+    }
+  });
+  function closeMobileMenu() {
+    if (navMenu.classList.contains('open')) {
+      navMenu.classList.remove('open');
+    }
+  }
+
+  // Login handler
+  function handleLogin(event) {
+    event.preventDefault();
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+
+    if (validUsers[username] && validUsers[username] === password) {
+      loggedInUser = username;
+      alert(`स्वागत है, ${username}! आप सफलतापूर्वक लॉगिन हो गए हैं।`);
+      showPage('home');
+      toggleLogout(true);
+    } else {
+      alert("गलत उपयोगकर्ता नाम या पासवर्ड। कृपया पुनः प्रयास करें।");
+    }
+  }
+
+  // Logout
+  function logout() {
+    loggedInUser = null;
+    alert("आप लॉगआउट हो गए हैं।");
+    toggleLogout(false);
+    showPage('home');
+  }
+
+  // Toggle logout button visibility
+  function toggleLogout(show) {
+    const btn = document.getElementById('logoutBtn');
+    if (show) {
+      btn.style.display = 'inline-block';
+    } else {
+      btn.style.display = 'none';
+    }
+  }
+
+  // Render poems
+  function renderPoems() {
+    const container = document.getElementById('poemList');
+    container.innerHTML = '';
+
+    if (poems.length === 0) {
+      container.innerHTML = "<p style='text-align:center; color:#80deea;'>अभी कोई कविता उपलब्ध नहीं है। कृपया नई कविता जोड़ें।</p>";
+      return;
+    }
+
+    poems.forEach(({name, type, poem}, index) => {
+      const card = document.createElement('article');
+      card.className = 'card';
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-label', `कविता: ${type} शैली, लेखक: ${name}`);
+      card.innerHTML = `
+        <div class="type">${type}</div>
+        <h3>${name}</h3>
+        <p>${poem}</p>
+      `;
+
+      container.appendChild(card);
+    });
+  }
+
+  // Handle new poem submission
+  function handleRegisterPoem(event) {
+    event.preventDefault();
+    const poetName = document.getElementById('poetName').value.trim();
+    const poemType = document.getElementById('poemType').value.trim();
+    const poemText = document.getElementById('poemText').value.trim();
+
+    if (!poetName || !poemType || !poemText) {
+      alert("सभी फ़ील्ड भरना आवश्यक है।");
+      return;
+    }
+
+    poems.push({
+      name: poetName,
+      type: poemType,
+      poem: poemText
+    });
+
+    alert("नई कविता सफलतापूर्वक जोड़ दी गई है!");
+    event.target.reset();
+    showPage('poems');
+  }
+
+  // Initialize on load
+  window.onload = () => {
+    showPage('home');
+    toggleLogout(false);
+  };
+</script>
+
+</body>
+</html>
